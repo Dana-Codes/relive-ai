@@ -1,12 +1,12 @@
 import Fastify from 'fastify'
-import { healthRoutes } from './routes/health.js'
+import { registerRoutes } from './routes/index.js'
 
 export function buildApp() {
   const app = Fastify({
     logger: true,
   })
 
-  app.register(healthRoutes)
+  app.register(registerRoutes)
 
   return app
 }
