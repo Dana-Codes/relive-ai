@@ -1,8 +1,17 @@
 import { buildApp } from './app.js'
+import { connectDatabase } from './db/client.js'
 
-const app = buildApp()
+async function start() {
+  await connectDatabase()
 
-app.listen({ port: 3000, host: '0.0.0.0' }).catch((error) => {
-  app.log.error(error)
-  process.exit(1)
-})
+  const app = buildApp()
+
+  try {
+    await app.listen({ port: 3000, host: '0.0.0.0' })
+  } catch (error) {
+    app.log.error(error)
+    process.exit(1)
+  }
+}
+
+start()
