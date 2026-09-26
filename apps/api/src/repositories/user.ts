@@ -5,6 +5,10 @@ import { client } from '../db/client.js'
 const database = client.db('relive')
 const users: Collection<User> = database.collection<User>('users')
 
+export async function findUserByEmail(email: string) {
+  return users.findOne({ email })
+}
+
 export async function createUser(user: User) {
   return users.insertOne(user)
 }
