@@ -1,5 +1,5 @@
-import { hashPassword } from './password.js'
-import { EmailAlreadyInUseError } from './errors.js'
+import { hashPassword, verifyPassword } from './password.js'
+import { EmailAlreadyInUseError, InvalidCredentialsError } from './errors.js'
 import {
   createUser,
   findUserByEmail,
@@ -7,6 +7,11 @@ import {
 
 interface CreateAccountInput {
   name: string
+  email: string
+  password: string
+}
+
+interface LoginInput {
   email: string
   password: string
 }
@@ -26,4 +31,23 @@ export async function createAccount(input: CreateAccountInput) {
     passwordHash,
     createdAt: new Date(),
   })
+}
+
+export async function login(input: LoginInput) {
+  const user = await findUserByEmail(input.email)
+
+  if(!user) {
+    throw new InvalidCredentialsError()
+  }
+
+  const passwordValid = await verifyPassword(
+    input.password,
+    user.passwordHash
+  )
+
+  if (!passwordValid) {
+    throw new InvalidCredentialsError()
+  }
+
+  return user
 }
