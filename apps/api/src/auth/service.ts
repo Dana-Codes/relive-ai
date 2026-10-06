@@ -1,5 +1,9 @@
 import { hashPassword, verifyPassword } from './password.js'
-import { EmailAlreadyInUseError, InvalidCredentialsError } from './errors.js'
+import { createAuthToken } from './token.js'
+import {
+  EmailAlreadyInUseError,
+  InvalidCredentialsError,
+} from './errors.js'
 import {
   createUser,
   findUserByEmail,
@@ -36,18 +40,23 @@ export async function createAccount(input: CreateAccountInput) {
 export async function login(input: LoginInput) {
   const user = await findUserByEmail(input.email)
 
-  if(!user) {
+  if (!user) {
     throw new InvalidCredentialsError()
   }
 
   const passwordValid = await verifyPassword(
     input.password,
-    user.passwordHash
+    user.passwordHash,
   )
 
   if (!passwordValid) {
     throw new InvalidCredentialsError()
   }
 
-  return user
+  const token = createAuthToken(user._id!.toString())
+
+  return {
+    user,
+    token,
+  }
 }
