@@ -10,13 +10,14 @@ export async function loginRoutes(app: FastifyInstance) {
     }
 
     try {
-      const user = await login(body)
+      const result = await login(body)
 
-      return reply.code(200).send({
-        userId: user._id,
-        name: user.name,
-        email: user.email,
-      })
+return reply.code(200).send({
+  userId: result.user._id,
+  name: result.user.name,
+  email: result.user.email,
+  token: result.token,
+})
     } catch (error) {
       if (error instanceof InvalidCredentialsError) {
         return reply.code(401).send({
