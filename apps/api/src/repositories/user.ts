@@ -1,4 +1,4 @@
-import type { Collection } from 'mongodb'
+import { ObjectId, type Collection } from 'mongodb'
 import type { User } from '../models/user.js'
 import { client } from '../db/client.js'
 
@@ -11,4 +11,15 @@ export async function findUserByEmail(email: string) {
 
 export async function createUser(user: User) {
   return users.insertOne(user)
+}
+
+
+export async function findUserById(userId: string) {
+  if (!ObjectId.isValid(userId)) {
+    return null
+  }
+
+  return users.findOne({
+    _id: new ObjectId(userId),
+  })
 }
