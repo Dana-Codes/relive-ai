@@ -7,6 +7,7 @@ import {
 import {
   createUser,
   findUserByEmail,
+  findUserById,
 } from '../repositories/user.js'
 
 interface CreateAccountInput {
@@ -58,5 +59,21 @@ export async function login(input: LoginInput) {
   return {
     user,
     token,
+  }
+}
+
+
+export async function getUserProfile(userId: string) {
+  const user = await findUserById(userId)
+
+  if (!user) {
+    return null
+  }
+
+  return {
+    userId: user._id!.toString(),
+    name: user.name,
+    email: user.email,
+    createdAt: user.createdAt,
   }
 }
